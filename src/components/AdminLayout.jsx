@@ -1,9 +1,10 @@
 import { NavLink } from "react-router-dom";
-import { LayoutDashboard, Armchair, Utensils, ClipboardList, Users, LogOut } from "lucide-react";
+import { LayoutDashboard, Armchair, Utensils, ClipboardList, Users, LogOut, Clock3 } from "lucide-react";
 import Brand from "./Brand.jsx";
 
 const staffLinks = [
   { label: "Dashboard", path: "/staff", Icon: LayoutDashboard },
+  { label: "Queue management", path: "/staff/queue", Icon: Clock3 },
   { label: "Tables & Queue", path: "/staff/tables", Icon: Armchair },
   { label: "Orders", path: "/staff/orders", Icon: ClipboardList }
 ];

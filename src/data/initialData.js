@@ -1,9 +1,9 @@
 export const initialFoods = [
-  { id: 1, name: "Classic Margherita", description: "Tomato, basil and mozzarella", price: 349, category: "Popular", emoji: "🍕" },
-  { id: 2, name: "Truffle Parmesan Fries", description: "Truffle oil, parmesan and herbs", price: 199, category: "Starters", emoji: "🍟" },
-  { id: 3, name: "Creamy Rosé Penne", description: "Pink sauce, basil and parmesan", price: 329, category: "Mains", emoji: "🍝" },
-  { id: 4, name: "Garden Fresh Salad", description: "Seasonal greens and lemon dressing", price: 249, category: "Starters", emoji: "🥗" },
-  { id: 5, name: "Chocolate Lava Cake", description: "Warm chocolate cake", price: 179, category: "Drinks", emoji: "🍰" }
+  { id: 1, name: "Classic Margherita", description: "Tomato, basil and mozzarella", price: 349, category: "Popular" },
+  { id: 2, name: "Truffle Parmesan Fries", description: "Truffle oil, parmesan and herbs", price: 199, category: "Starters" },
+  { id: 3, name: "Creamy Rosé Penne", description: "Pink sauce, basil and parmesan", price: 329, category: "Mains" },
+  { id: 4, name: "Garden Fresh Salad", description: "Seasonal greens and lemon dressing", price: 249, category: "Starters" },
+  { id: 5, name: "Chocolate Lava Cake", description: "Warm chocolate cake", price: 179, category: "Drinks" }
 ];
 
 export const initialTables = Array.from({ length: 12 }, (_, index) => ({

@@ -1,20 +1,28 @@
 {
-"name": "seatflow-readable",
-"version": "1.0.0",
-"private": true,
-"type": "module",
-"scripts": {
-"dev": "vite",
-"build": "vite build",
-"preview": "vite preview"
-},
-"dependencies": {
-"@vitejs/plugin-react": "latest",
-"vite": "latest",
-"react": "latest",
-"react-dom": "latest",
-"react-router-dom": "latest",
-"lucide-react": "latest"
-},
-"devDependencies": {}
+    "name": "seatflow-readable",
+    "version": "1.0.0",
+    "private": true,
+    "type": "module",
+    "scripts": {
+        "dev": "vite",
+        "build": "vite build",
+        "preview": "vite preview",
+        "lint": "eslint"
+    },
+    "dependencies": {
+        "@vitejs/plugin-react": "latest",
+        "axios": "^1.21.1",
+        "lucide-react": "^1.66.0",
+        "react": "latest",
+        "react-dom": "latest",
+        "react-router-dom": "latest",
+        "vite": "latest"
+    },
+    "devDependencies": {
+        "@eslint/js": "^10.0.1",
+        "eslint": "^10.14.0",
+        "eslint-plugin-react-hooks": "^7.1.1",
+        "eslint-plugin-react-refresh": "^0.5.7",
+        "globals": "^17.13.0"
+    }
 }

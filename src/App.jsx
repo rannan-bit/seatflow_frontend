@@ -6,12 +6,14 @@ import Home from "./pages/Home.jsx";
 import Login from "./pages/Login.jsx";
 import CheckIn from "./pages/customer/CheckIn.jsx";
 import QueueStatus from "./pages/customer/QueueStatus.jsx";
+import CheckQueue from "./pages/customer/CheckQueue.jsx";
 import Menu from "./pages/customer/Menu.jsx";
 import Cart from "./pages/customer/Cart.jsx";
 import OrderTracking from "./pages/customer/OrderTracking.jsx";
 import StaffDashboard from "./pages/staff/StaffDashboard.jsx";
 import TableQueue from "./pages/staff/TableQueue.jsx";
 import StaffOrders from "./pages/staff/StaffOrders.jsx";
+import QueueManagement from "./pages/staff/QueueManagement.jsx";
 import AdminDashboard from "./pages/admin/AdminDashboard.jsx";
 import TableManagement from "./pages/admin/TableManagement.jsx";
 import MenuManagement from "./pages/admin/MenuManagement.jsx";
@@ -31,21 +33,23 @@ export default function App() {
       {/* Customer pages */}
       <Route path="/customer/check-in" element={<CheckIn />} />
       <Route path="/customer/queue" element={<QueueStatus />} />
-      <Route path="/customer/menu" element={<Menu foods={foods} cart={cart} setCart={setCart} />} />
+      <Route path="/customer/check-queue" element={<CheckQueue />} />
+      <Route path="/customer/menu" element={<Menu foods={foods} cart={cart} setCart={setCart} onFoodsLoaded={setFoods} />} />
       <Route path="/customer/cart" element={<Cart foods={foods} cart={cart} setCart={setCart} />} />
       <Route path="/customer/order" element={<OrderTracking />} />
 
       {/* Staff pages */}
       <Route path="/staff-login" element={<Login role="Staff" />} />
       <Route path="/staff" element={<StaffDashboard />} />
+      <Route path="/staff/queue" element={<QueueManagement />} />
       <Route path="/staff/tables" element={<TableQueue tables={tables} setTables={setTables} queue={queue} setQueue={setQueue} />} />
       <Route path="/staff/orders" element={<StaffOrders />} />
 
       {/* Admin pages */}
       <Route path="/admin-login" element={<Login role="Admin" />} />
       <Route path="/admin" element={<AdminDashboard />} />
-      <Route path="/admin/tables" element={<TableManagement tables={tables} setTables={setTables} />} />
-      <Route path="/admin/menu" element={<MenuManagement foods={foods} setFoods={setFoods} />} />
+      <Route path="/admin/tables" element={<TableManagement />} />
+      <Route path="/admin/menu" element={<MenuManagement />} />
       <Route path="/admin/orders" element={<OrderManagement />} />
       <Route path="/admin/staff" element={<StaffManagement />} />
 

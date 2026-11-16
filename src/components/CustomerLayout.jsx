@@ -1,5 +1,5 @@
 import { NavLink } from "react-router-dom";
-import { Armchair, Utensils, ShoppingCart, ClipboardList } from "lucide-react";
+import { Armchair, Utensils, ShoppingCart, ClipboardList, UserRound } from "lucide-react";
 import Brand from "./Brand.jsx";
 
 const navigation = [
@@ -14,7 +14,7 @@ export default function CustomerLayout({ active, children }) {
     <div className="customer-layout">
       <header className="customer-header">
         <Brand />
-        <span className="profile-icon">◎</span>
+        <span className="profile-icon"><UserRound size={17} /></span>
       </header>
       <main className="customer-content">{children}</main>
       <nav className="bottom-nav">
