@@ -1,4 +1,5 @@
 import apiService from "../api/apiService";
+import axios from "axios";
 
 // Authentication
 // Returns a JWT that the axios interceptor attaches to every request.
@@ -156,5 +157,18 @@ export const savePushSubscriptionAPI = async (data) => {
 
 // AI Food Assistant
 export const chatWithAIAPI = async (message) => {
+    try {
+        const localResponse = await axios.post(
+            "http://localhost:3000/api/chat",
+            { message },
+            { timeout: 7000 }
+        );
+        if (localResponse?.data?.response) {
+            return localResponse;
+        }
+    } catch {
+        // Fall back to configured apiService (e.g. Render)
+    }
+
     return await apiService("POST", "/api/chat", { message });
 };

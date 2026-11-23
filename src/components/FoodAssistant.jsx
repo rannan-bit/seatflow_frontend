@@ -1,6 +1,7 @@
 import React, { useState, useRef, useEffect } from "react";
 import { Sparkles, Bot, Send, X, RotateCcw, Utensils } from "lucide-react";
 import { chatWithAIAPI } from "../services/allAPI.js";
+import { initialFoods } from "../data/initialData.js";
 import "./FoodAssistant.css";
 
 const QUICK_PROMPTS = [
@@ -12,6 +13,71 @@ const QUICK_PROMPTS = [
 
 function formatMessageTime() {
     return new Date().toLocaleTimeString([], { hour: "2-digit", minute: "2-digit" });
+}
+
+// Client-side menu intelligence fallback in case backend server is unreachable
+function getLocalMenuAdvice(userText) {
+    const query = (userText || "").toLowerCase();
+
+    if (query.includes("veg") && !query.includes("non-veg") && !query.includes("non veg")) {
+        const vegList = initialFoods.filter((f) => f.isVeg !== false);
+        return (
+            "Here are our vegetarian specialities at The Olive Room:\n\n" +
+            vegList.map((f) => `• **${f.name}** (₹${f.price}) — ${f.description}`).join("\n") +
+            "\n\nWould you like recommendations for starters or mains?"
+        );
+    }
+
+    if (query.includes("non-veg") || query.includes("non veg") || query.includes("chicken") || query.includes("meat") || query.includes("pepperoni")) {
+        const nonVegList = initialFoods.filter((f) => f.isVeg === false);
+        return (
+            "Here are our non-vegetarian selections:\n\n" +
+            nonVegList.map((f) => `• **${f.name}** (₹${f.price}) — ${f.description}`).join("\n") +
+            "\n\nBoth are hearty house favourites!"
+        );
+    }
+
+    if (query.includes("starter") || query.includes("appetizer") || query.includes("fries") || query.includes("salad")) {
+        const starters = initialFoods.filter((f) => f.category === "Starters");
+        return (
+            "For starters, we highly recommend:\n\n" +
+            starters.map((f) => `• **${f.name}** (₹${f.price}) — ${f.description}`).join("\n") +
+            "\n\nWould you like to pair this with a main course?"
+        );
+    }
+
+    if (query.includes("drink") || query.includes("dessert") || query.includes("cake") || query.includes("sweet")) {
+        const drinks = initialFoods.filter((f) => f.category === "Drinks");
+        return (
+            "For drinks and sweet finishes, try our:\n\n" +
+            drinks.map((f) => `• **${f.name}** (₹${f.price}) — ${f.description}`).join("\n")
+        );
+    }
+
+    if (query.includes("spicy") || query.includes("kick") || query.includes("chili")) {
+        return (
+            "Looking for something flavorful with a kick? We recommend:\n\n" +
+            "• **Crispy Pepperoni Flatbread** (₹429) — spiced pepperoni with mozzarella & chili honey\n" +
+            "• **Truffle Parmesan Fries** (₹199) — ask our server to add extra chili pepper flakes\n\n" +
+            "Our kitchen can always tailor spice levels to your preference!"
+        );
+    }
+
+    if (query.includes("popular") || query.includes("favourite") || query.includes("recommend") || query.includes("best") || query.includes("special")) {
+        const popular = initialFoods.filter((f) => f.category === "Popular" || f.price > 300);
+        return (
+            "Here are our top recommended house favourites:\n\n" +
+            popular.map((f) => `• **${f.name}** (₹${f.price}) — ${f.description}`).join("\n") +
+            "\n\nFeel free to ask for vegetarian or non-vegetarian options!"
+        );
+    }
+
+    // Default overview
+    return (
+        "Welcome to The Olive Room! Here are a few guest favourites you can try:\n\n" +
+        initialFoods.slice(0, 3).map((f) => `• **${f.name}** (₹${f.price}) — ${f.description}`).join("\n") +
+        "\n\nAsk me about vegetarian options, starters, drinks, or specific cravings!"
+    );
 }
 
 export default function FoodAssistant() {
@@ -59,17 +125,21 @@ export default function FoodAssistant() {
         setLoading(true);
 
         try {
-            const response = await chatWithAIAPI(query);
+            let replyText = "";
 
-            console.log("Full response:", response);
-            console.log("Response data:", response?.data);
-            console.log("Response status:", response?.status);
+            // 1. Try local or configured backend API
+            try {
+                const response = await chatWithAIAPI(query);
+                if (response?.data?.response) {
+                    replyText = response.data.response;
+                }
+            } catch (apiErr) {
+                console.warn("API chat attempt failed, using menu knowledge:", apiErr);
+            }
 
-            const replyText = response?.data?.response;
-
+            // 2. If API was unreachable or returned empty, use intelligent menu knowledge
             if (!replyText) {
-                console.log("Unexpected response structure:", response);
-                throw new Error("Invalid AI response");
+                replyText = getLocalMenuAdvice(query);
             }
 
             setMessages((prev) => [
@@ -88,9 +158,8 @@ export default function FoodAssistant() {
                 ...prev,
                 {
                     role: "assistant",
-                    text: "I'm temporarily having trouble reaching the kitchen database. Please feel free to browse our menu or ask our restaurant team.",
-                    time: formatMessageTime(),
-                    isError: true
+                    text: getLocalMenuAdvice(query),
+                    time: formatMessageTime()
                 }
             ]);
 
@@ -180,7 +249,7 @@ export default function FoodAssistant() {
                                         <Utensils size={13} />
                                     </span>
                                 )}
-                                <div className={`chat-bubble ${msg.role} ${msg.isError ? "error" : ""}`}>
+                                <div className={`chat-bubble ${msg.role}`}>
                                     <p className="chat-bubble-text">{msg.text}</p>
                                     <span className="chat-bubble-time">{msg.time}</span>
                                 </div>
