@@ -1,9 +1,11 @@
 export const initialFoods = [
-  { id: 1, name: "Classic Margherita", description: "Tomato, basil and mozzarella", price: 349, category: "Popular" },
-  { id: 2, name: "Truffle Parmesan Fries", description: "Truffle oil, parmesan and herbs", price: 199, category: "Starters" },
-  { id: 3, name: "Creamy Rosé Penne", description: "Pink sauce, basil and parmesan", price: 329, category: "Mains" },
-  { id: 4, name: "Garden Fresh Salad", description: "Seasonal greens and lemon dressing", price: 249, category: "Starters" },
-  { id: 5, name: "Chocolate Lava Cake", description: "Warm chocolate cake", price: 179, category: "Drinks" }
+  { id: 1, name: "Classic Margherita", description: "Tomato, basil and mozzarella", price: 349, category: "Popular", isVeg: true },
+  { id: 2, name: "Truffle Parmesan Fries", description: "Truffle oil, parmesan and herbs", price: 199, category: "Starters", isVeg: true },
+  { id: 3, name: "Creamy Rosé Penne", description: "Pink sauce, basil and parmesan", price: 329, category: "Mains", isVeg: true },
+  { id: 4, name: "Garden Fresh Salad", description: "Seasonal greens and lemon dressing", price: 249, category: "Starters", isVeg: true },
+  { id: 5, name: "Chocolate Lava Cake", description: "Warm chocolate cake", price: 179, category: "Drinks", isVeg: true },
+  { id: 6, name: "Crispy Pepperoni Flatbread", description: "Spiced pepperoni, mozzarella and chili honey", price: 429, category: "Popular", isVeg: false },
+  { id: 7, name: "Grilled Chicken Steak", description: "Herb marinated chicken breast with rosemary jus", price: 479, category: "Mains", isVeg: false }
 ];
 
 export const initialTables = Array.from({ length: 12 }, (_, index) => ({

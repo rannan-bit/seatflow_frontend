@@ -1,6 +1,6 @@
 import { useEffect, useState } from "react";
 import { Link } from "react-router-dom";
-import { Trash2, Eye, EyeOff, Pencil, RefreshCw, Check, X } from "lucide-react";
+import { Trash2, Eye, EyeOff, Pencil, RefreshCw, Check, X, UserPlus } from "lucide-react";
 import AdminLayout from "../../components/AdminLayout.jsx";
 import {
   addStaffAPI,
@@ -11,16 +11,12 @@ import {
 
 function getErrorMessage(response, fallback) {
   const data = response?.response?.data ?? response?.data;
-  if (typeof data === "string" && data.trim()) {
-    return data;
-  }
+  if (typeof data === "string" && data.trim()) return data;
   return data?.message || fallback;
 }
 
 function formatJoined(date) {
-  if (!date) {
-    return "—";
-  }
+  if (!date) return "—";
   return new Date(date).toLocaleDateString([], { day: "2-digit", month: "short", year: "numeric" });
 }
 
@@ -34,14 +30,12 @@ export default function StaffManagement() {
   const [unauthorized, setUnauthorized] = useState(false);
   const [refreshKey, setRefreshKey] = useState(0);
 
-  // Add staff form
   const [name, setName] = useState("");
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
   const [showPassword, setShowPassword] = useState(false);
   const [submitting, setSubmitting] = useState(false);
 
-  // Inline edit state
   const [editingId, setEditingId] = useState(null);
   const [editName, setEditName] = useState("");
   const [editEmail, setEditEmail] = useState("");
@@ -55,70 +49,47 @@ export default function StaffManagement() {
 
     async function loadStaff() {
       const response = await getAllStaffAPI();
-
-      if (!active) {
-        return;
-      }
-
+      if (!active) return;
       if (response?.status === 200 && Array.isArray(response.data)) {
         setStaff(response.data);
         setError("");
       } else {
         setError(getErrorMessage(response, "We couldn't load the staff accounts. Please try again."));
       }
-
       setUnauthorized(response?.response?.status === 401);
       setLoading(false);
       setRefreshing(false);
     }
 
     loadStaff();
-
-    return () => {
-      active = false;
-    };
+    return () => { active = false; };
   }, [refreshKey]);
 
   function refresh() {
     setRefreshing(true);
     setActionError("");
-    setRefreshKey((key) => key + 1);
+    setRefreshKey((k) => k + 1);
   }
 
   async function addStaff(event) {
     event.preventDefault();
-
-    if (submitting) {
-      return;
-    }
-
+    if (submitting) return;
     if (!name.trim() || !email.includes("@") || !password.trim()) {
       setActionError("Enter a name, a valid email address and a password.");
       return;
     }
-
     setSubmitting(true);
     setActionError("");
     setSuccessMessage("");
-
-    const response = await addStaffAPI({
-      name: name.trim(),
-      email: email.trim(),
-      password
-    });
-
+    const response = await addStaffAPI({ name: name.trim(), email: email.trim(), password });
     if (response?.status === 201) {
-      setName("");
-      setEmail("");
-      setPassword("");
-      setShowPassword(false);
+      setName(""); setEmail(""); setPassword(""); setShowPassword(false);
       setSuccessMessage(response.data?.message || "Staff account created successfully.");
       refresh();
     } else {
       setUnauthorized(response?.response?.status === 401);
       setActionError(getErrorMessage(response, "Failed to add the staff account. Please try again."));
     }
-
     setSubmitting(false);
   }
 
@@ -134,9 +105,7 @@ export default function StaffManagement() {
 
   function cancelEditing() {
     setEditingId(null);
-    setEditName("");
-    setEditEmail("");
-    setEditPassword("");
+    setEditName(""); setEditEmail(""); setEditPassword("");
     setShowEditPassword(false);
   }
 
@@ -145,23 +114,12 @@ export default function StaffManagement() {
       setActionError("Enter a name and a valid email address.");
       return;
     }
-
     setSavingId(member._id);
     setActionError("");
     setSuccessMessage("");
-
-    const updates = {
-      name: editName.trim(),
-      email: editEmail.trim()
-    };
-
-    // Only send the password when the admin typed a new one
-    if (editPassword.trim()) {
-      updates.password = editPassword;
-    }
-
+    const updates = { name: editName.trim(), email: editEmail.trim() };
+    if (editPassword.trim()) updates.password = editPassword;
     const response = await updateStaffAPI(member._id, updates);
-
     if (response?.status === 200) {
       cancelEditing();
       setSuccessMessage(response.data?.message || "Staff account updated successfully.");
@@ -170,36 +128,24 @@ export default function StaffManagement() {
       setUnauthorized(response?.response?.status === 401);
       setActionError(getErrorMessage(response, "Failed to update the staff account. Please try again."));
     }
-
     setSavingId(null);
   }
 
   async function removeStaff(member) {
-    if (deletingId) {
-      return;
-    }
-
-    if (!window.confirm(`Delete ${member.name}'s staff account? They will no longer be able to sign in.`)) {
-      return;
-    }
-
+    if (deletingId) return;
+    if (!window.confirm(`Delete ${member.name}'s staff account? They will no longer be able to sign in.`)) return;
     setDeletingId(member._id);
     setActionError("");
     setSuccessMessage("");
-
     const response = await deleteStaffAPI(member._id);
-
     if (response?.status === 200) {
-      if (editingId === member._id) {
-        cancelEditing();
-      }
+      if (editingId === member._id) cancelEditing();
       setSuccessMessage(response.data?.message || "Staff account deleted successfully.");
       refresh();
     } else {
       setUnauthorized(response?.response?.status === 401);
       setActionError(getErrorMessage(response, "Failed to delete the staff account. Please try again."));
     }
-
     setDeletingId(null);
   }
 
@@ -207,7 +153,9 @@ export default function StaffManagement() {
     <AdminLayout role="Admin" title="Staff management">
       <h1>Staff management</h1>
       <p className="muted-text">
-        {loading ? "Loading staff accounts…" : `${staff.length} staff ${staff.length === 1 ? "account" : "accounts"} for The Olive Room.`}
+        {loading
+          ? "Loading staff accounts…"
+          : `${staff.length} staff ${staff.length === 1 ? "account" : "accounts"} for The Olive Room.`}
       </p>
 
       {unauthorized && (
@@ -217,50 +165,56 @@ export default function StaffManagement() {
         </div>
       )}
 
-      <form className="panel form-row" onSubmit={addStaff}>
-        <input
-          placeholder="Full name"
-          value={name}
-          onChange={(event) => setName(event.target.value)}
-          required
-        />
-        <input
-          type="email"
-          placeholder="Email address"
-          value={email}
-          onChange={(event) => setEmail(event.target.value)}
-          required
-        />
-        <div className="password-input-wrapper">
+      {/* Add staff form */}
+      <section className="panel" style={{ marginBottom: 0 }}>
+        <h2 style={{ marginBottom: 14 }}>Add team member</h2>
+        <form className="form-row" onSubmit={addStaff}>
           <input
-            type={showPassword ? "text" : "password"}
-            placeholder="Password"
-            value={password}
-            onChange={(event) => setPassword(event.target.value)}
+            placeholder="Full name"
+            value={name}
+            onChange={(e) => setName(e.target.value)}
             required
+            style={{ flex: "1 1 160px" }}
           />
-          <button
-            type="button"
-            className="password-toggle-button"
-            onClick={() => setShowPassword((prev) => !prev)}
-            title={showPassword ? "Hide password" : "Show password"}
-            aria-label={showPassword ? "Hide password" : "Show password"}
-          >
-            {showPassword ? <EyeOff size={15} /> : <Eye size={15} />}
+          <input
+            type="email"
+            placeholder="Email address"
+            value={email}
+            onChange={(e) => setEmail(e.target.value)}
+            required
+            style={{ flex: "1 1 200px" }}
+          />
+          <div className="password-input-wrapper" style={{ flex: "1 1 180px" }}>
+            <input
+              type={showPassword ? "text" : "password"}
+              placeholder="Password"
+              value={password}
+              onChange={(e) => setPassword(e.target.value)}
+              required
+              style={{ width: "100%" }}
+            />
+            <button
+              type="button"
+              className="password-toggle-button"
+              onClick={() => setShowPassword((p) => !p)}
+              title={showPassword ? "Hide password" : "Show password"}
+              aria-label={showPassword ? "Hide password" : "Show password"}
+            >
+              {showPassword ? <EyeOff size={15} /> : <Eye size={15} />}
+            </button>
+          </div>
+          <button type="submit" className="button" disabled={submitting}>
+            <UserPlus size={15} /> {submitting ? "Adding…" : "Add staff"}
           </button>
-        </div>
-        <button type="submit" className="button" disabled={submitting}>
-          {submitting ? "Adding…" : "+ Add staff"}
-        </button>
-      </form>
-
-      {actionError && <p className="form-error">{actionError}</p>}
-      {successMessage && <p className="form-success">{successMessage}</p>}
-      {error && !actionError && <p className="form-error">{error}</p>}
+        </form>
+        {actionError && <p className="form-error" style={{ marginTop: 10 }}>{actionError}</p>}
+        {successMessage && <p className="form-success" style={{ marginTop: 10 }}>{successMessage}</p>}
+        {error && !actionError && <p className="form-error" style={{ marginTop: 10 }}>{error}</p>}
+      </section>
 
       <section className="panel section-gap">
         <div className="queue-toolbar staff-toolbar">
-          <h2>Staff accounts</h2>
+          <h2 style={{ margin: 0 }}>Staff accounts</h2>
           <button
             className="button button-outline"
             onClick={() => { setSuccessMessage(""); refresh(); }}
@@ -280,7 +234,7 @@ export default function StaffManagement() {
               <thead>
                 <tr>
                   <th>TEAM MEMBER</th>
-                  <th>EMAIL</th>
+                  <th>EMAIL / CREDENTIALS</th>
                   <th>ROLE</th>
                   <th>JOINED</th>
                   <th>ACTIONS</th>
@@ -291,6 +245,7 @@ export default function StaffManagement() {
                   const editing = editingId === member._id;
                   const saving = savingId === member._id;
                   const deleting = deletingId === member._id;
+                  const isAdmin = member.role === "admin";
 
                   return (
                     <tr key={member._id}>
@@ -300,7 +255,7 @@ export default function StaffManagement() {
                             className="staff-edit-input"
                             aria-label={`Name for ${member.name}`}
                             value={editName}
-                            onChange={(event) => setEditName(event.target.value)}
+                            onChange={(e) => setEditName(e.target.value)}
                           />
                         ) : (
                           <strong>{member.name}</strong>
@@ -314,7 +269,7 @@ export default function StaffManagement() {
                               type="email"
                               aria-label={`Email for ${member.name}`}
                               value={editEmail}
-                              onChange={(event) => setEditEmail(event.target.value)}
+                              onChange={(e) => setEditEmail(e.target.value)}
                             />
                             <div className="password-input-wrapper">
                               <input
@@ -323,14 +278,13 @@ export default function StaffManagement() {
                                 placeholder="New password (optional)"
                                 aria-label={`New password for ${member.name}`}
                                 value={editPassword}
-                                onChange={(event) => setEditPassword(event.target.value)}
+                                onChange={(e) => setEditPassword(e.target.value)}
                               />
                               <button
                                 type="button"
                                 className="password-toggle-button"
-                                onClick={() => setShowEditPassword((prev) => !prev)}
+                                onClick={() => setShowEditPassword((p) => !p)}
                                 title={showEditPassword ? "Hide password" : "Show password"}
-                                aria-label={showEditPassword ? "Hide password" : "Show password"}
                               >
                                 {showEditPassword ? <EyeOff size={15} /> : <Eye size={15} />}
                               </button>
@@ -340,7 +294,13 @@ export default function StaffManagement() {
                           member.email
                         )}
                       </td>
-                      <td>{member.role === "admin" ? "Admin" : "Staff"}</td>
+                      <td>
+                        <span
+                          className={isAdmin ? "role-badge role-badge-admin" : "role-badge role-badge-staff"}
+                        >
+                          {isAdmin ? "Admin" : "Staff"}
+                        </span>
+                      </td>
                       <td>{formatJoined(member.createdAt)}</td>
                       <td>
                         <div className="staff-row-actions">

@@ -28,6 +28,11 @@ function foodImageUrl(image) {
 }
 
 function mapFoodFromDB(food) {
+  const isVegExplicit = food.isVeg !== undefined;
+  const isVeg = isVegExplicit
+    ? (food.isVeg === true || food.isVeg === "true")
+    : !/chicken|mutton|fish|beef|prawn|meat|egg|pork|bacon|seafood/i.test(food.name || "");
+
   return {
     id: food._id,
     name: food.name,
@@ -37,6 +42,7 @@ function mapFoodFromDB(food) {
     image: food.image || "",
     imageUrl: foodImageUrl(food.image),
     available: food.available !== false,
+    isVeg
   };
 }
 
@@ -67,6 +73,7 @@ export default function MenuManagement() {
   const [price, setPrice] = useState("");
   const [category, setCategory] = useState("Mains");
   const [available, setAvailable] = useState(true);
+  const [isVeg, setIsVeg] = useState(true);
   const [imageFile, setImageFile] = useState(null);
   const [submitting, setSubmitting] = useState(false);
   const fileInputRef = useRef(null);
@@ -116,6 +123,7 @@ export default function MenuManagement() {
     setPrice("");
     setCategory("Mains");
     setAvailable(true);
+    setIsVeg(true);
     setImageFile(null);
     if (fileInputRef.current) {
       fileInputRef.current.value = "";
@@ -129,6 +137,7 @@ export default function MenuManagement() {
     setPrice(String(food.price));
     setCategory(food.category);
     setAvailable(food.available);
+    setIsVeg(food.isVeg !== false);
     setImageFile(null);
     if (fileInputRef.current) {
       fileInputRef.current.value = "";
@@ -165,6 +174,7 @@ export default function MenuManagement() {
     formData.append("price", String(numericPrice));
     formData.append("category", category);
     formData.append("available", available ? "true" : "false");
+    formData.append("isVeg", isVeg ? "true" : "false");
     if (imageFile) {
       formData.append("image", imageFile);
     }
@@ -304,6 +314,14 @@ export default function MenuManagement() {
           ))}
         </select>
         <select
+          value={isVeg ? "true" : "false"}
+          onChange={(event) => setIsVeg(event.target.value === "true")}
+          aria-label="Dietary type"
+        >
+          <option value="true">Type: Vegetarian (Veg)</option>
+          <option value="false">Type: Non-Vegetarian (Non-Veg)</option>
+        </select>
+        <select
           value={available ? "true" : "false"}
           onChange={(event) => setAvailable(event.target.value === "true")}
         >
@@ -366,6 +384,7 @@ export default function MenuManagement() {
               <thead>
                 <tr>
                   <th>DISH</th>
+                  <th>TYPE</th>
                   <th>CATEGORY</th>
                   <th>PRICE</th>
                   <th>STATUS</th>
@@ -393,6 +412,12 @@ export default function MenuManagement() {
                           <small>{food.description}</small>
                         </div>
                       </div>
+                    </td>
+                    <td>
+                      <span className={`dietary-badge ${food.isVeg ? "veg" : "non-veg"}`}>
+                        <span className="dietary-marker"></span>
+                        {food.isVeg ? "Veg" : "Non-Veg"}
+                      </span>
                     </td>
                     <td>{food.category}</td>
                     <td>{money(food.price)}</td>

@@ -1,6 +1,7 @@
 import { NavLink } from "react-router-dom";
 import { Armchair, Utensils, ShoppingCart, ClipboardList, UserRound } from "lucide-react";
 import Brand from "./Brand.jsx";
+import FoodAssistant from "./FoodAssistant.jsx";
 
 const navigation = [
   { label: "Queue", path: "/customer/queue", Icon: Armchair },
@@ -25,6 +26,7 @@ export default function CustomerLayout({ active, children }) {
           </NavLink>
         ))}
       </nav>
+      <FoodAssistant />
     </div>
   );
 }

@@ -112,7 +112,18 @@ export default function Cart({ foods, cart, setCart }) {
           {selectedFoods.map((food) => (
             <article className="cart-item" key={food.id}>
               <span className="food-emoji food-placeholder"><Utensils size={20} /></span>
-              <div className="food-details"><strong>{food.name}</strong><p>{money(food.price)} each</p><div className="quantity-control"><button onClick={() => changeQuantity(food.id, -1)}><Minus size={12} /></button>{cart[food.id]}<button onClick={() => changeQuantity(food.id, 1)} disabled={food.available === false}><Plus size={12} /></button></div></div>
+              <div className="food-details">
+                <div className="food-name-row">
+                  {food.isVeg !== undefined && (
+                    <span className={`dietary-marker-icon ${food.isVeg ? "veg" : "non-veg"}`}>
+                      <span className="dietary-marker-circle"></span>
+                    </span>
+                  )}
+                  <strong>{food.name}</strong>
+                </div>
+                <p>{money(food.price)} each</p>
+                <div className="quantity-control"><button type="button" onClick={() => changeQuantity(food.id, -1)}><Minus size={12} /></button>{cart[food.id]}<button type="button" onClick={() => changeQuantity(food.id, 1)} disabled={food.available === false}><Plus size={12} /></button></div>
+              </div>
               <strong>{money(food.price * cart[food.id])}</strong>
             </article>
           ))}

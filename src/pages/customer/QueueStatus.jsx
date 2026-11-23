@@ -49,50 +49,28 @@ export default function QueueStatus() {
   const [updatedAt, setUpdatedAt] = useState(null);
 
   // Enable browser push notifications
-  async function handleEnableNotifications() {
+  const handleEnableNotifications = async () => {
+    setPushError("");
+
+    const token = queue?.token || customer?.token;
+
+    if (!token) {
+      setPushError("Queue token not found. Please rejoin the queue to enable notifications.");
+      return;
+    }
+
+    setPushLoading(true);
+
     try {
-      setPushLoading(true);
-      setPushError("");
-
-      if (!customer?.token) {
-        throw new Error("Customer queue token not found.");
-      }
-
-      if (!("Notification" in window)) {
-        throw new Error("Your browser does not support notifications.");
-      }
-
-      if (!("serviceWorker" in navigator) || !("PushManager" in window)) {
-        throw new Error("Your browser does not support push notifications.");
-      }
-
-      if (!window.isSecureContext) {
-        throw new Error("Notifications require HTTPS or localhost.");
-      }
-
-      if (Notification.permission === "denied") {
-        throw new Error(
-          "Notifications are blocked. Please enable them in your browser settings."
-        );
-      }
-
-      await subscribeCustomerToPush(customer.token);
-
+      await subscribeCustomerToPush(token);
       setPushEnabled(true);
-
-    } catch (err) {
-      console.error("Notification error:", err);
-
-      setPushError(
-        err.response?.data?.message ||
-        err.message ||
-        "Unable to enable notifications."
-      );
-
+    } catch (error) {
+      console.error("Notification error:", error);
+      setPushError(error.message || "Unable to enable notifications.");
     } finally {
       setPushLoading(false);
     }
-  }
+  };
 
   // Retrieve existing browser subscription
   useEffect(() => {

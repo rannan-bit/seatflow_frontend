@@ -1,38 +1,300 @@
-.empty-queue-card {
-    text-align: center;
-    padding: 36px 28px;
-    max-width: 520px;
-    margin: 32px auto;
+/* index.css — additional component styles not covered by global.css */
+
+/* Queue date filter (additional styles for the panel context) */
+.queue-date-filter {
+  padding-bottom: 14px;
+  border-bottom: 1px solid var(--color-line-2);
+  margin-bottom: 16px;
 }
 
-.empty-queue-card h1 {
-    font-size: 26px;
-    margin: 20px 0 12px;
+/* Toolbar hint text (read-only banner) */
+.historical-banner {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  padding: 5px 11px;
+  border-radius: var(--radius-pill);
+  background: #fff8e8;
+  border: 1px solid #f0dfa0;
+  color: #7a5c0a;
+  font-size: 11.5px;
+  font-weight: 500;
 }
 
-.empty-queue-card .muted-text {
-    line-height: 1.7;
-    max-width: 360px;
-    margin: 0 auto 24px;
+/* Staff toolbar spacing */
+.staff-toolbar { margin-bottom: 16px; }
+
+/* Form add panel (top of admin pages) */
+.add-form-panel {
+  margin-bottom: 20px;
 }
 
-.empty-queue-card .button {
-    margin-top: 8px;
+/* Success notification inline */
+.success-message {
+  color: var(--color-success);
+  font-size: 12px;
+  font-weight: 500;
 }
 
-.empty-queue-icon {
-    width: 64px;
-    height: 64px;
-    border-radius: 50%;
-    margin: 24px auto 0;
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    background: #edf5f0;
-    color: #167354;
+/* Loading indicator */
+.loading-container {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 48px 20px;
+  color: var(--color-subtle);
+  font-size: 13px;
 }
 
-.empty-queue-card .helper-text {
-    display: block;
-    margin-top: 18px;
+/* Error message block */
+.error-message {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 12px;
+  padding: 12px 14px;
+  margin-bottom: 16px;
+  border: 1px solid #f0d4d4;
+  border-radius: var(--radius-md);
+  background: var(--color-error-bg);
+  color: var(--color-error);
+  font-size: 13px;
+}
+
+.error-message button {
+  flex-shrink: 0;
+  min-height: 32px;
+  padding: 5px 12px;
+  border: 1px solid #e0b5b5;
+  border-radius: var(--radius-sm);
+  background: white;
+  color: var(--color-error);
+  font-size: 12px;
+  font-weight: 600;
+  cursor: pointer;
+}
+
+/* File input styling */
+.form-row input[type="file"] {
+  min-width: 190px;
+  padding: 8px 10px;
+  background: white;
+  font-size: 12.5px;
+  cursor: pointer;
+}
+
+/* Order details expand toggle */
+.expand-toggle {
+  display: inline-flex;
+  align-items: center;
+  gap: 5px;
+  padding: 5px 10px;
+  min-height: 30px;
+  border: 1px solid var(--color-line);
+  border-radius: var(--radius-sm);
+  background: white;
+  color: var(--color-muted);
+  font-size: 12px;
+  font-weight: 500;
+  cursor: pointer;
+  transition: all 0.13s;
+}
+
+.expand-toggle:hover {
+  background: var(--color-primary-mist);
+  border-color: #b5d4c2;
+  color: var(--color-primary-dark);
+}
+
+/* Role badge in staff table */
+.role-badge {
+  display: inline-flex;
+  align-items: center;
+  padding: 3px 9px;
+  border-radius: var(--radius-pill);
+  font-size: 10.5px;
+  font-weight: 700;
+  letter-spacing: 0.2px;
+}
+
+.role-badge-admin { background: var(--color-primary-soft); color: var(--color-primary-dark); }
+.role-badge-staff { background: #eaf2fb; color: #1a5fa8; }
+
+/* Dietary Indicators and Sections */
+.food-name-row {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  margin-bottom: 2px;
+}
+
+.food-name-row strong {
+  font-size: 14.5px;
+  font-weight: 600;
+  color: var(--color-ink);
+}
+
+.dietary-marker-icon {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  width: 15px;
+  height: 15px;
+  border-radius: 3px;
+  flex-shrink: 0;
+  border-width: 1.5px;
+  border-style: solid;
+  background: #ffffff;
+}
+
+.dietary-marker-icon.veg {
+  border-color: #15803d;
+}
+
+.dietary-marker-icon.non-veg {
+  border-color: #b91c1c;
+}
+
+.dietary-marker-circle {
+  width: 6px;
+  height: 6px;
+  border-radius: 50%;
+}
+
+.dietary-marker-icon.veg .dietary-marker-circle,
+.dietary-marker-circle.veg {
+  background: #15803d;
+}
+
+.dietary-marker-icon.non-veg .dietary-marker-circle,
+.dietary-marker-circle.non-veg {
+  background: #b91c1c;
+}
+
+.diet-filter-chips {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  margin-bottom: 20px;
+  flex-wrap: wrap;
+}
+
+.diet-chip {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  padding: 6px 14px;
+  border-radius: var(--radius-pill);
+  border: 1px solid var(--color-line);
+  background: white;
+  color: var(--color-muted);
+  font-size: 12.5px;
+  font-weight: 500;
+  cursor: pointer;
+  transition: all 0.15s ease;
+}
+
+.diet-chip:hover {
+  border-color: #b5d4c2;
+  color: var(--color-ink);
+}
+
+.diet-chip.selected {
+  background: var(--color-primary);
+  border-color: var(--color-primary);
+  color: white;
+  font-weight: 600;
+}
+
+.diet-chip.veg-chip.selected {
+  background: #15803d;
+  border-color: #15803d;
+  color: white;
+}
+
+.diet-chip.non-veg-chip.selected {
+  background: #991b1b;
+  border-color: #991b1b;
+  color: white;
+}
+
+.menu-dietary-section {
+  margin-bottom: 26px;
+}
+
+.menu-dietary-section:last-child {
+  margin-bottom: 12px;
+}
+
+.dietary-heading-title {
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+}
+
+.dietary-heading-title strong {
+  font-size: 14.5px;
+  font-weight: 700;
+  color: var(--color-ink);
+  letter-spacing: -0.2px;
+}
+
+.dietary-food-list {
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+}
+
+.empty-substate {
+  padding: 16px 14px;
+  background: #f8faf9;
+  border: 1px dashed var(--color-line);
+  border-radius: var(--radius-md);
+  color: var(--color-subtle);
+  font-size: 13px;
+  margin: 0;
+}
+
+.dietary-badge {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  padding: 3px 8px;
+  border-radius: var(--radius-sm);
+  font-size: 11.5px;
+  font-weight: 600;
+  border: 1px solid transparent;
+}
+
+.dietary-badge.veg {
+  background: #ecfdf5;
+  color: #15803d;
+  border-color: #a7f3d0;
+}
+
+.dietary-badge.non-veg {
+  background: #fef2f2;
+  color: #b91c1c;
+  border-color: #fecaca;
+}
+
+.dietary-badge .dietary-marker {
+  width: 6px;
+  height: 6px;
+  border-radius: 50%;
+}
+
+.dietary-badge.veg .dietary-marker {
+  background: #15803d;
+}
+
+.dietary-badge.non-veg .dietary-marker {
+  background: #b91c1c;
+}
+
+/* Responsive table on mobile */
+@media (max-width: 600px) {
+  .table-scroll { margin: 0 -2px; }
+  thead th { padding: 10px 11px; font-size: 10px; }
+  tbody td { padding: 11px 11px; font-size: 12.5px; }
 }

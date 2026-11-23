@@ -1,15 +1,14 @@
 import { useState } from "react";
 import { Armchair, Pencil, Check, X, Trash2 } from "lucide-react";
 
-// Tables saved in MongoDB use `_id` / `tableNumber`; the demo staff page still
-// uses the older `id` shape. These helpers keep both working.
-function tableKey(table) {
-  return table._id ?? table.id;
-}
+function tableKey(table) { return table._id ?? table.id; }
+function tableNumber(table) { return table.tableNumber ?? table.id; }
 
-function tableNumber(table) {
-  return table.tableNumber ?? table.id;
-}
+const STATUS_COLORS = {
+  Available: { pill: "available", accent: "#15694e", bg: "#e4f4ec" },
+  Occupied:  { pill: "occupied",  accent: "#a63434", bg: "#fdf0f0" },
+  Reserved:  { pill: "reserved",  accent: "#1a5fa8", bg: "#eaf2fb" }
+};
 
 export default function TableGrid({
   tables,
@@ -41,28 +40,19 @@ export default function TableGrid({
       setSaving(true);
       const result = await onUpdate(id, { capacity: parsedCapacity, status: editStatus });
       setSaving(false);
-      // The parent returns false when the API call fails, so keep the form open.
-      if (result === false) {
-        return;
-      }
+      if (result === false) return;
     }
     setEditingId(null);
   }
 
-  function handleCancel() {
-    setEditingId(null);
-  }
+  function handleCancel() { setEditingId(null); }
 
   const getStatusClass = (status) => {
     switch (status) {
-      case "Available":
-        return "available";
-      case "Occupied":
-        return "occupied";
-      case "Reserved":
-        return "reserved";
-      default:
-        return "waiting";
+      case "Available": return "available";
+      case "Occupied":  return "occupied";
+      case "Reserved":  return "reserved";
+      default:          return "waiting";
     }
   };
 
@@ -73,21 +63,24 @@ export default function TableGrid({
         const displayNumber = String(tableNumber(table)).padStart(2, "0");
         const isBusy = busyId === key;
         const isEditing = admin && editingId === key;
+        const statusColors = STATUS_COLORS[table.status] || STATUS_COLORS.Available;
 
         if (isEditing) {
           return (
             <article
               className="table-card"
               key={key}
-              style={{ borderColor: "#2864ed", boxShadow: "0 0 0 1px #2864ed" }}
+              style={{ borderColor: "var(--color-primary)", boxShadow: "0 0 0 2px rgb(21 105 78 / 15%)" }}
             >
               <div className="table-card-top">
-                <Armchair size={20} />
-                <span style={{ fontSize: "9px", fontWeight: "700", color: "#2864ed" }}>Editing</span>
+                <Armchair size={18} />
+                <span style={{ fontSize: "10px", fontWeight: 700, color: "var(--color-primary)", letterSpacing: "0.5px" }}>
+                  EDITING
+                </span>
               </div>
-              <h3 style={{ margin: "10px 0 8px" }}>Table {displayNumber}</h3>
+              <h3 style={{ margin: "8px 0 12px", fontSize: "14px" }}>Table {displayNumber}</h3>
 
-              <label style={{ display: "block", fontSize: "9px", color: "#8490a4", marginBottom: "3px" }}>
+              <label style={{ display: "block", fontSize: "11px", color: "var(--color-muted)", marginBottom: "4px", fontWeight: 600 }}>
                 Capacity (guests)
               </label>
               <input
@@ -98,16 +91,17 @@ export default function TableGrid({
                 style={{
                   width: "100%",
                   minWidth: 0,
-                  padding: "7px 8px",
-                  border: "1px solid #e1e7f0",
-                  borderRadius: "6px",
-                  fontSize: "11px",
-                  marginBottom: "8px",
-                  boxSizing: "border-box"
+                  padding: "8px 10px",
+                  border: "1px solid var(--color-line)",
+                  borderRadius: "var(--radius-sm)",
+                  fontSize: "13px",
+                  marginBottom: "10px",
+                  boxSizing: "border-box",
+                  outline: "none"
                 }}
               />
 
-              <label style={{ display: "block", fontSize: "9px", color: "#8490a4", marginBottom: "3px" }}>
+              <label style={{ display: "block", fontSize: "11px", color: "var(--color-muted)", marginBottom: "4px", fontWeight: 600 }}>
                 Status
               </label>
               <select
@@ -116,12 +110,14 @@ export default function TableGrid({
                 style={{
                   width: "100%",
                   minWidth: 0,
-                  padding: "7px 8px",
-                  border: "1px solid #e1e7f0",
-                  borderRadius: "6px",
-                  fontSize: "11px",
-                  marginBottom: "10px",
-                  boxSizing: "border-box"
+                  padding: "8px 10px",
+                  border: "1px solid var(--color-line)",
+                  borderRadius: "var(--radius-sm)",
+                  fontSize: "13px",
+                  marginBottom: "12px",
+                  boxSizing: "border-box",
+                  outline: "none",
+                  background: "white"
                 }}
               >
                 <option value="Available">Available</option>
@@ -133,20 +129,20 @@ export default function TableGrid({
                 <button
                   type="button"
                   className="button"
-                  style={{ flex: 1, padding: "7px 4px", fontSize: "10px" }}
+                  style={{ flex: 1, minHeight: "34px", padding: "6px 8px", fontSize: "12px" }}
                   onClick={() => handleSave(key)}
                   disabled={saving}
                 >
-                  <Check size={12} /> {saving ? "Saving…" : "Save"}
+                  <Check size={13} /> {saving ? "Saving…" : "Save"}
                 </button>
                 <button
                   type="button"
                   className="button button-outline"
-                  style={{ flex: 1, padding: "7px 4px", fontSize: "10px" }}
+                  style={{ flex: 1, minHeight: "34px", padding: "6px 8px", fontSize: "12px" }}
                   onClick={handleCancel}
                   disabled={saving}
                 >
-                  <X size={12} /> Cancel
+                  <X size={13} /> Cancel
                 </button>
               </div>
 
@@ -154,12 +150,12 @@ export default function TableGrid({
                 <button
                   type="button"
                   className="remove-button full-width"
-                  style={{ marginTop: "6px", justifyContent: "center" }}
+                  style={{ marginTop: "8px", justifyContent: "center" }}
                   onClick={() => onDelete(key)}
                   disabled={isBusy || saving || table.status === "Occupied"}
                   title={table.status === "Occupied" ? "Occupied tables cannot be removed" : undefined}
                 >
-                  <Trash2 size={12} /> Remove table
+                  <Trash2 size={13} /> Remove table
                 </button>
               )}
             </article>
@@ -167,9 +163,13 @@ export default function TableGrid({
         }
 
         return (
-          <article className="table-card" key={key}>
+          <article
+            className="table-card"
+            key={key}
+            style={{ borderLeft: `3px solid ${statusColors.accent}` }}
+          >
             <div className="table-card-top">
-              <Armchair size={20} />
+              <Armchair size={18} style={{ color: statusColors.accent }} />
               <button
                 type="button"
                 className={`status-pill ${getStatusClass(table.status)}`}
@@ -178,31 +178,30 @@ export default function TableGrid({
                 title={admin ? "Click to toggle: Available → Occupied → Reserved" : undefined}
                 disabled={isBusy}
               >
-                ● {isBusy ? "Saving…" : table.status}
+                {isBusy ? "Saving…" : table.status}
               </button>
             </div>
-            <h3>Table {displayNumber}</h3>
+            <h3 style={{ margin: "10px 0 3px" }}>Table {displayNumber}</h3>
             <p>Seats up to {table.capacity} guests</p>
 
             {admin ? (
-              <div style={{ display: "flex", gap: "6px", marginTop: "8px" }}>
+              <div style={{ display: "flex", gap: "6px" }}>
                 <button
                   type="button"
                   className="button button-outline"
-                  style={{ flex: 1, padding: "8px 4px", fontSize: "9px" }}
+                  style={{ flex: 1, minHeight: "34px", padding: "6px 6px", fontSize: "11.5px" }}
                   onClick={() => onToggle(key)}
                   disabled={isBusy}
                   title="Cycle status: Available → Occupied → Reserved"
                 >
-                  {isBusy ? "Saving…" : "Toggle status"}
+                  {isBusy ? "Saving…" : "Toggle"}
                 </button>
                 <button
                   type="button"
                   className="button"
-                  style={{ flex: 1, padding: "8px 4px", fontSize: "9px" }}
+                  style={{ flex: 1, minHeight: "34px", padding: "6px 6px", fontSize: "11.5px" }}
                   onClick={() => startEditing(table)}
                   disabled={isBusy}
-                  title="Edit capacity and status"
                 >
                   <Pencil size={12} /> Edit
                 </button>
@@ -210,6 +209,7 @@ export default function TableGrid({
             ) : (
               <button
                 className="button button-outline full-width"
+                style={{ minHeight: "34px", fontSize: "12px" }}
                 onClick={() =>
                   table.status === "Available" ? onSeatNext(key) : onToggle(key)
                 }

@@ -74,8 +74,23 @@ export const getCustomerOrdersAPI = async (token) => {
 
 // Staff - queue and tables
 // Queue and table routes require the staff/admin JWT from session storage.
-export const getAllQueuesAPI = async (status) => {
-    const url = status ? `/all-queues?status=${encodeURIComponent(status)}` : "/all-queues";
+export const getAllQueuesAPI = async (status, date) => {
+    const params = new URLSearchParams();
+
+    if (status) {
+        params.append("status", status);
+    }
+
+    if (date) {
+        params.append("date", date);
+    }
+
+    const query = params.toString();
+
+    const url = query
+        ? `/all-queues?${query}`
+        : "/all-queues";
+
     return await apiService("GET", url);
 };
 
@@ -110,8 +125,23 @@ export const updateQueueStatusAPI = async (queueId, status) => {
 };
 
 // Staff - orders
-export const getAllOrdersAPI = async (status) => {
-    const url = status ? `/all-orders?status=${encodeURIComponent(status)}` : "/all-orders";
+export const getAllOrdersAPI = async (status, date) => {
+    const params = new URLSearchParams();
+
+    if (status) {
+        params.append("status", status);
+    }
+
+    if (date) {
+        params.append("date", date);
+    }
+
+    const query = params.toString();
+
+    const url = query
+        ? `/all-orders?${query}`
+        : "/all-orders";
+
     return await apiService("GET", url);
 };
 
@@ -122,4 +152,9 @@ export const updateOrderStatusAPI = async (orderId, updates) => {
 // Customer - Web Push subscription
 export const savePushSubscriptionAPI = async (data) => {
     return await apiService("POST", "/customer/push-subscription", data);
+};
+
+// AI Food Assistant
+export const chatWithAIAPI = async (message) => {
+    return await apiService("POST", "/api/chat", { message });
 };

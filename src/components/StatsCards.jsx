@@ -2,6 +2,13 @@ import { useEffect, useState } from "react";
 import { Armchair, CheckCircle2, Users, Clock3 } from "lucide-react";
 import { getAllQueuesAPI, getAllTablesAPI } from "../services/allAPI.js";
 
+const STAT_CONFIGS = [
+  { label: "Total tables",     valueKey: "total",     Icon: Armchair,      iconBg: "var(--color-primary-soft)",    iconColor: "var(--color-primary)" },
+  { label: "Available tables", valueKey: "available", Icon: CheckCircle2,  iconBg: "#e4f4ec",                      iconColor: "#15694e" },
+  { label: "Occupied tables",  valueKey: "occupied",  Icon: Users,         iconBg: "#fdf0f0",                      iconColor: "#a63434" },
+  { label: "Waiting parties",  valueKey: "waiting",   Icon: Clock3,        iconBg: "#fdf5df",                      iconColor: "#92650a" }
+];
+
 export default function StatsCards() {
   const [tables, setTables] = useState([]);
   const [queue, setQueue] = useState([]);
@@ -39,56 +46,35 @@ export default function StatsCards() {
           );
         }
       } finally {
-        if (active) {
-          setLoading(false);
-        }
+        if (active) { setLoading(false); }
       }
     }
 
     loadStats();
-
-    return () => {
-      active = false;
-    };
+    return () => { active = false; };
   }, []);
 
-  const stats = [
-    {
-      label: "Total tables",
-      value: tables.length,
-      Icon: Armchair
-    },
-    {
-      label: "Available tables",
-      value: tables.filter((table) => table.status === "Available").length,
-      Icon: CheckCircle2
-    },
-    {
-      label: "Occupied tables",
-      value: tables.filter((table) => table.status === "Occupied").length,
-      Icon: Users
-    },
-    {
-      label: "Waiting parties",
-      value: queue.filter((entry) => entry.status === "Waiting").length,
-      Icon: Clock3
-    }
-  ];
+  const values = {
+    total:     tables.length,
+    available: tables.filter((t) => t.status === "Available").length,
+    occupied:  tables.filter((t) => t.status === "Occupied").length,
+    waiting:   queue.filter((e) => e.status === "Waiting").length
+  };
 
   return (
     <>
       <div className="stats-grid">
-        {stats.map(({ label, value, Icon }) => (
+        {STAT_CONFIGS.map(({ label, valueKey, Icon, iconBg, iconColor }) => (
           <article className="stat-card" key={label}>
-            <Icon size={20} />
+            <Icon size={20} style={{ background: iconBg, color: iconColor }} />
             <small>{label}</small>
-            <strong>{loading ? "—" : value}</strong>
+            <strong>{loading ? "—" : values[valueKey]}</strong>
             <span>{loading ? "Loading…" : "Live overview"}</span>
           </article>
         ))}
       </div>
 
-      {error && <p className="form-error">{error}</p>}
+      {error && <p className="form-error" style={{ marginTop: 8 }}>{error}</p>}
     </>
   );
 }
